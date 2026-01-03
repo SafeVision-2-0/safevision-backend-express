@@ -14,18 +14,115 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id       Int    @id @default(autoincrement())
+  email    String @unique @db.VarChar(50)
+  password String @db.VarChar(50)
+  username String
+
+  profile Profile?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String? @db.Text
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Profile {
+  id     Int      @id @default(autoincrement())
+  name   String
+  birth  DateTime
+  gender String   @db.Char(1)
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  history      History?
+  profileImage ProfileImage?
+
+  teams     TeamOnProfiles[]
+  positions PositionOnProfiles[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
+model History {
+  id             Int     @id @default(autoincrement())
+  image_captured String
+  isUnknown      Boolean
+  gender         String  @db.Char(1)
+
+  profileId Int     @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model TeamOnProfiles {
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId Int
+  team      Team    @relation(fields: [teamId], references: [id])
+  teamId    Int
+
+  @@id([profileId, teamId])
+  
+  @@map("team_on_profiles")
+}
+
+model Team {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  profiles TeamOnProfiles[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PositionOnProfiles {
+  profile    Profile  @relation(fields: [profileId], references: [id])
+  profileId  Int
+  position   Position @relation(fields: [positionId], references: [id])
+  positionId Int
+
+  @@id([profileId, positionId])
+  
+  @@map("position_on_profiles")
+}
+
+model Position {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  profiles PositionOnProfiles[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model ProfileImage {
+  id    Int    @id @default(autoincrement())
+  image String
+
+  faceEmbedding FaceEmbedding?
+
+  profileId Int     @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("profile_image")
+}
+
+model FaceEmbedding {
+  id     Int  @id @default(autoincrement())
+  vector Json
+
+  profileImageId Int          @unique
+  profileImage   ProfileImage @relation(fields: [profileImageId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("face_embedding")
+}
