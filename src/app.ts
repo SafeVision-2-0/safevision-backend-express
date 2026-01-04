@@ -1,7 +1,7 @@
 import express from "express";
 import type {Application} from "express";
 import cors from "cors";
-import userRoutes from "./routes/routes";
+import teamRoutes from "./routes/team.router";
 import morgan from "morgan"
 
 const app: Application = express();
@@ -20,6 +20,6 @@ app.get("/", (req, res) => {
         status: "success",
     });
 });
-app.use("/api/users", userRoutes);
+app.use("/api/v1/teams", teamRoutes);
 
 export default app;
