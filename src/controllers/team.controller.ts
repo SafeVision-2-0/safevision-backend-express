@@ -46,7 +46,7 @@ export const putTeam = async (req:Request, res: Response) => {
             data: updatedTeam
         });
     } catch (error) {
-        res.status(500).json({ message: "Error creating team", error });
+        res.status(500).json({ message: "Error updating team", error });
     }
 };
 
