@@ -46,7 +46,7 @@ export const putPosition = async (req:Request, res: Response) => {
             data: updatedPosition
         });
     } catch (error) {
-        res.status(500).json({ message: "Error creating position", error });
+        res.status(500).json({ message: "Error updating position", error });
     }
 };
 
