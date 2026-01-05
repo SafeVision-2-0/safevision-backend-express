@@ -2,6 +2,8 @@ import express from "express";
 import type {Application} from "express";
 import cors from "cors";
 import teamRoutes from "./routes/team.router";
+import positionRoutes from "./routes/position.router";
+
 import morgan from "morgan"
 
 const app: Application = express();
@@ -21,5 +23,6 @@ app.get("/", (req, res) => {
     });
 });
 app.use("/api/v1/teams", teamRoutes);
+app.use("/api/v1/positions", positionRoutes);
 
 export default app;
