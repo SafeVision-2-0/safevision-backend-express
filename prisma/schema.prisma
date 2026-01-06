@@ -20,7 +20,8 @@ model User {
   password String
   username String
 
-  profile Profile?
+  profileId Int?    @unique
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -32,11 +33,10 @@ model Profile {
   birth  DateTime
   gender String   @db.Char(1)
 
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User?
 
-  history      History?
-  profileImage ProfileImage?
+  histories History[]
+  profileImage ProfileImage[]
 
   teams     TeamOnProfiles[]
   positions PositionOnProfiles[]
@@ -51,7 +51,7 @@ model History {
   isUnknown      Boolean
   gender         String  @db.Char(1)
 
-  profileId Int     @unique
+  profileId Int
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
@@ -104,9 +104,9 @@ model ProfileImage {
   id    Int    @id @default(autoincrement())
   image String
 
-  faceEmbedding FaceEmbedding?
+  faceEmbedding FaceEmbedding[]
 
-  profileId Int     @unique
+  profileId Int
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
@@ -119,7 +119,7 @@ model FaceEmbedding {
   id     Int  @id @default(autoincrement())
   vector Json
 
-  profileImageId Int          @unique
+  profileImageId Int
   profileImage   ProfileImage @relation(fields: [profileImageId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
