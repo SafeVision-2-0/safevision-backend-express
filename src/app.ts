@@ -6,6 +6,7 @@ import teamRoutes from "./routes/team.router";
 import positionRoutes from "./routes/position.router";
 import authRoutes from "./routes/auth.router";
 import userRoutes from "./routes/user.router";
+import profileRoutes from "./routes/profile.router";
 
 const app: Application = express();
 
@@ -28,5 +29,7 @@ app.use("/api/v1/teams", teamRoutes);
 app.use("/api/v1/positions", positionRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/profile", profileRoutes);
+
 
 export default app;
