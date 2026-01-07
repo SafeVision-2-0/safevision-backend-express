@@ -6,9 +6,8 @@ import {
     readAllProfile,
     readProfileById
 } from "../services/profile.service";
-import {readAllUsers} from "../services/user.service";
-import {getAllTeams} from "../services/team.service";
-
+import {readAllTeamByProfileId} from "../services/profile.team.service";
+import {readAllPositionByProfileId} from "../services/profile.position.service";
 
 export const getProfiles = async (req: Request, res: Response) => {
     try {
@@ -19,6 +18,7 @@ export const getProfiles = async (req: Request, res: Response) => {
             message: "Data profil telah diambil",
             data: profiles
         });
+
     } catch (error) {
         res.status(500).json({message: "Error fetching profiles", error});
     }
@@ -40,6 +40,39 @@ export const getProfileById = async (req: Request, res: Response) => {
     }
 };
 
+export const getTeamsByProfileId = async (req: Request, res: Response) => {
+    try {
+        const {profileId} = req.params;
+
+        const profileTeams = await readAllTeamByProfileId(Number(profileId));
+
+        res.status(200).json({
+            success: true,
+            message: "Semua data tim pada profil ini telah diambil",
+            data: profileTeams
+        });
+
+    } catch (error) {
+        res.status(500).json({message: "Error fetching positions", error});
+    }
+};
+
+export const getPositionsById = async (req: Request, res: Response) => {
+    try {
+        const {profileId} = req.params;
+
+        const profilePositions = await readAllPositionByProfileId(Number(profileId));
+
+        res.status(200).json({
+            success: true,
+            message: "Semua data posisi pada profil ini telah diambil",
+            data: profilePositions
+        });
+
+    } catch (error) {
+        res.status(500).json({message: "Error fetching positions", error});
+    }
+};
 
 export const postProfile = async (req: Request, res: Response) => {
     try {

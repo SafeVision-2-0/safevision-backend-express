@@ -1,5 +1,7 @@
 import type {Request, Response} from "express";
 import {getAllTeams,createTeam, deleteTeam, updateTeam} from "../services/team.service";
+import {readAllProfileByTeamId} from "../services/profile.team.service";
+import {readAllProfileByPositionId} from "../services/profile.position.service";
 
 
 export const getTeams = async (req: Request, res: Response) => {
@@ -16,6 +18,21 @@ export const getTeams = async (req: Request, res: Response) => {
     }
 };
 
+export const getProfilesByTeamId = async (req: Request, res: Response) => {
+    try{
+        const { teamId } = req.params;
+
+        const teams = await readAllProfileByTeamId(Number(teamId));
+
+        res.status(200).json({
+            success: true,
+            message: "Data tim telah diambil",
+            data: teams
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching teams", error });
+    }
+};
 
 
 export const postTeam = async (req:Request, res: Response) => {
