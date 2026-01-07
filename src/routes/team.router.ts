@@ -4,7 +4,7 @@ import {authMiddleware} from "../middlewares/auth.middleware";
 
 const router: Router = Router();
 
-router.get("/", authMiddleware, getTeams);
+router.get("/", getTeams);
 router.post("/", postTeam);
 router.put("/:id", putTeam);
 router.delete("/:id", eraseTeam);

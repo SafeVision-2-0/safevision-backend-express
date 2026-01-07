@@ -1,23 +1,30 @@
 import type {Request, Response} from "express";
-import {createUser, getByEmail} from "../services/user.service";
+import {createUser, readUserByEmail} from "../services/user.service";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import {readProfileById} from "../services/profile.service";
 
 
 export const register = async (req: Request, res: Response) => {
     try {
         //get variable from body
-        const {email, password, username} = req.body;
+        const {profileId, email, password, username} = req.body;
+
+        //check if profile already registered (error if no)
+        const existingProfile = await readProfileById(profileId);
+        if (!existingProfile) {
+            return res.status(409).json({error: 'Profil dengan id ini tidak terdaftar'});
+        }
 
         //check if user already registered (error if yes)
-        const existingUser = await getByEmail(email);
+        const existingUser = await readUserByEmail(email);
         if (existingUser) {
             return res.status(409).json({error: 'Akun dengan email ini telah terdaftar.'});
         }
-        console.log(password)
+
         //hash password and create user
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await createUser(email, hashedPassword, username);
+        const newUser = await createUser(profileId, email, hashedPassword, username);
 
         //send success response
         res.status(201).json({
@@ -34,7 +41,7 @@ export const login = async (req: Request, res: Response) => {
     try {
         //get variable from body
         const {email, password} = req.body;
-        const existingUser = await getByEmail(email);
+        const existingUser = await readUserByEmail(email);
 
         //check if user exist (error if no)
         if (!existingUser) {
