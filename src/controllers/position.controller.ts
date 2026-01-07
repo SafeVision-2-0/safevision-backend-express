@@ -1,5 +1,6 @@
 import type {Request, Response} from "express";
 import {getAllPositions,createPosition, deletePosition, updatePosition} from "../services/position.service";
+import {readAllProfileByPositionId} from "../services/profile.position.service";
 
 
 export const getPositions = async (req: Request, res: Response) => {
@@ -15,6 +16,23 @@ export const getPositions = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Error fetching positions", error });
     }
 };
+
+export const getProfilesByPositionId = async (req: Request, res: Response) => {
+    try{
+        const { positionId } = req.params;
+
+        const positions = await readAllProfileByPositionId(Number(positionId));
+
+        res.status(200).json({
+            success: true,
+            message: "Data profil telah diambil",
+            data: positions
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching profiles", error });
+    }
+};
+
 
 
 
