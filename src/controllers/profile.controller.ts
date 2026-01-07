@@ -6,7 +6,7 @@ import {
     readAllProfile,
     readProfileById
 } from "../services/profile.service";
-import {getAllUsers} from "../services/user.service";
+import {readAllUsers} from "../services/user.service";
 import {getAllTeams} from "../services/team.service";
 
 
@@ -63,6 +63,7 @@ export const putProfile = async (req: Request, res: Response) => {
     try {
         const {id} = req.params;
         const {name, birth, gender} = req.body;
+        console.log(id, name, birth, gender)
 
         const updatedProfile = await updateProfile(
             Number(id), name, new Date(birth), gender

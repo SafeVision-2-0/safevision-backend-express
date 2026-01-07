@@ -1,9 +1,9 @@
 import type {Request, Response} from "express";
-import {getAllUsers, updateUser} from "../services/user.service";
+import {readAllUsers, updateUser} from "../services/user.service";
 
 export const getUsers = async (req: Request, res: Response) => {
     try{
-        const users = await getAllUsers();
+        const users = await readAllUsers();
 
         res.status(200).json({
             success: true,

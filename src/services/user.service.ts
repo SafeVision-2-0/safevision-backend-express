@@ -1,23 +1,23 @@
 import {prisma} from "./prisma";
 
 
-export const getAllUsers = () => prisma.user.findMany();
+export const readAllUsers = () => prisma.user.findMany();
 
-export const getByEmail = async (email: string) => {
+export const readUserByEmail = async (email: string) => {
     return prisma.user.findUnique({
         where: {email}
     });
 };
 
-export const createUser = async (email: string, password: string, username: string) => {
+export const createUser = async (profileId: number, email: string, password: string, username: string) => {
     return prisma.user.create({
-        data: {email, password, username},
+        data: {email, password, username,profileId},
     });
 };
 
-export const updateUser = async (id: number,username:string) => {
+export const updateUser = async (id: number, username: string) => {
     return prisma.user.update({
-        where: {id:id},
+        where: {id: id},
         data: {username: username},
     })
 }
