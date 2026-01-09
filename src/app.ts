@@ -9,6 +9,7 @@ import userRoutes from "./routes/user.router";
 import profileRoutes from "./routes/profile.router";
 import profilePositionRoutes from "./routes/profile.position.router";
 import profileTeamRoutes from "./routes/profile.team.router";
+import historyRoutes from "./routes/history.router";
 
 
 const app: Application = express();
@@ -35,5 +36,6 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/profile-position", profilePositionRoutes);
 app.use("/api/v1/profile-team", profileTeamRoutes);
+app.use("/api/v1/history", historyRoutes);
 
 export default app;

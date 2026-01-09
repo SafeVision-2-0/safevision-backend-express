@@ -13,14 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id       Int    @id @default(autoincrement())
   email    String @unique @db.VarChar(50)
   password String
   username String
 
-  profileId Int?    @unique
+  profileId Int?     @unique @map("profile_id")
   profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
@@ -35,7 +34,7 @@ model Profile {
 
   user User?
 
-  histories History[]
+  histories    History[]
   profileImage ProfileImage[]
 
   teams     TeamOnProfiles[]
@@ -46,13 +45,12 @@ model Profile {
 }
 
 model History {
-  id             Int     @id @default(autoincrement())
-  image_captured String
-  isUnknown      Boolean
-  gender         String  @db.Char(1)
+  id            Int     @id @default(autoincrement())
+  imageCaptured String  @map("image_captured")
+  isUnknown     Boolean @map("is_unknown")
 
-  profileId Int
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId Int?     @map("profile_id")
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -60,12 +58,11 @@ model History {
 
 model TeamOnProfiles {
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId Int
+  profileId Int     @map("profile_id")
   team      Team    @relation(fields: [teamId], references: [id])
-  teamId    Int
+  teamId    Int     @map("team_id")
 
   @@id([profileId, teamId])
-  
   @@map("team_on_profiles")
 }
 
@@ -81,12 +78,11 @@ model Team {
 
 model PositionOnProfiles {
   profile    Profile  @relation(fields: [profileId], references: [id])
-  profileId  Int
+  profileId  Int      @map("profile_id")
   position   Position @relation(fields: [positionId], references: [id])
-  positionId Int
+  positionId Int      @map("position_id")
 
   @@id([profileId, positionId])
-  
   @@map("position_on_profiles")
 }
 
@@ -106,7 +102,7 @@ model ProfileImage {
 
   faceEmbedding FaceEmbedding[]
 
-  profileId Int
+  profileId Int     @map("profile_id")
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
@@ -119,7 +115,7 @@ model FaceEmbedding {
   id     Int  @id @default(autoincrement())
   vector Json
 
-  profileImageId Int
+  profileImageId Int          @map("profile_image_id")
   profileImage   ProfileImage @relation(fields: [profileImageId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
