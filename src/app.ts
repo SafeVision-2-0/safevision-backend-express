@@ -10,6 +10,9 @@ import profileRoutes from "./routes/profile.router";
 import profilePositionRoutes from "./routes/profile.position.router";
 import profileTeamRoutes from "./routes/profile.team.router";
 import historyRoutes from "./routes/history.router";
+import profileImageRoutes from "./routes/profile.image.router";
+
+import path from "path";
 
 
 const app: Application = express();
@@ -20,6 +23,12 @@ app.use(express.json());
 
 // Logging setiap request
 app.use(morgan("dev"));
+
+//Akses image
+app.use(
+    "/uploads",
+    express.static(path.join(process.cwd(), "uploads"))
+);
 
 // Routes
 app.get("/", (req, res) => {
@@ -37,5 +46,6 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/profile-position", profilePositionRoutes);
 app.use("/api/v1/profile-team", profileTeamRoutes);
 app.use("/api/v1/history", historyRoutes);
+app.use("/api/v1/profile-image", profileImageRoutes);
 
 export default app;

@@ -1,8 +1,8 @@
-import { uploadHistory } from "../middlewares/upload.history.middleware";
+import {uploadHistory} from "../middlewares/upload.history.middleware";
 import {postHistory, eraseHistory, getHistories, getHistoryById} from "../controllers/history.controller";
-import { Router } from "express";
+import {Router} from "express";
 
-const router:Router = Router();
+const router: Router = Router();
 
 router.post("/", uploadHistory.single("file"), postHistory);
 router.delete("/:id", eraseHistory);
