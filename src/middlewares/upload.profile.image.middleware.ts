@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
         const uploadPath = path.join(
             process.cwd(),
             "uploads",
-            "history"
+            "profile-image"
         );
         cb(null, uploadPath);
     },
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     },
 });
 
-export const uploadHistory: Multer = multer({
+export const uploadProfileImage: Multer = multer({
     storage,
     limits: {
         fileSize: 2 * 1024 * 1024, // 2MB

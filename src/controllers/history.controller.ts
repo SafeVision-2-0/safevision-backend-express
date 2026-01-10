@@ -65,7 +65,7 @@ export const postHistory = async (
     res: Response
 ) => {
     const {profileId, isUnknown} = req.body
-
+    console.log(profileId);
     if (!req.file) {
         return res.status(400).json({message: "File harus berupa gambar"});
     }
@@ -103,7 +103,7 @@ export const postHistory = async (
             }
         }
 
-        const imagePath = `src/uploads/history/${req.file.filename}`;
+        const imagePath = `/uploads/history/${req.file.filename}`;
 
         const newHistory = await createHistory(
             profileId ? Number(profileId) : null,
