@@ -6,7 +6,7 @@ import {
     getProfiles,
     getProfileById,
     getPositionsById,
-    getTeamsByProfileId
+    getTeamsByProfileId, getProfileImageByProfileId
 } from "../controllers/profile.controller";
 
 const router: Router = Router();
@@ -15,6 +15,7 @@ router.post("/", postProfile);
 router.put("/:id", putProfile);
 router.get("/:profileId/position", getPositionsById);
 router.get("/:profileId/team", getTeamsByProfileId);
+router.get("/:profileId/profile-images", getProfileImageByProfileId);
 router.get("/", getProfiles);
 router.get("/:id", getProfileById);
 router.delete("/:id", eraseProfile);

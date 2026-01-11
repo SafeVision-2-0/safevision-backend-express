@@ -12,6 +12,8 @@ import profileTeamRoutes from "./routes/profile.team.router";
 import historyRoutes from "./routes/history.router";
 import profileImageRoutes from "./routes/profile.image.router";
 
+import personRoutes from "./routes/person.router";
+
 import path from "path";
 
 
@@ -47,5 +49,7 @@ app.use("/api/v1/profile-position", profilePositionRoutes);
 app.use("/api/v1/profile-team", profileTeamRoutes);
 app.use("/api/v1/history", historyRoutes);
 app.use("/api/v1/profile-image", profileImageRoutes);
+
+app.use("/api/v1/person/", personRoutes);
 
 export default app;

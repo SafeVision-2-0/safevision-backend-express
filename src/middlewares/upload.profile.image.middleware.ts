@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 export const uploadProfileImage: Multer = multer({
     storage,
     limits: {
-        fileSize: 2 * 1024 * 1024, // 2MB
+        fileSize: 4 * 1024 * 1024, // 4MB
     },
     fileFilter: (_req, file, cb) => {
         if (!file.mimetype.startsWith("image/")) {

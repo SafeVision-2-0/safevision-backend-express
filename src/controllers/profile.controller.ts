@@ -8,6 +8,10 @@ import {
 } from "../services/profile.service";
 import {readAllTeamByProfileId} from "../services/profile.team.service";
 import {readAllPositionByProfileId} from "../services/profile.position.service";
+import {readProfileImagesByProfileId} from "../services/profile.image.service";
+import {prisma} from "../services/prisma";
+import path from "path";
+import fs from "node:fs";
 
 export const getProfiles = async (req: Request, res: Response) => {
     try {
@@ -74,6 +78,21 @@ export const getPositionsById = async (req: Request, res: Response) => {
     }
 };
 
+export const getProfileImageByProfileId = async (req: Request, res: Response) => {
+    try {
+        const {profileId} = req.params;
+        const profileImage = await readProfileImagesByProfileId(Number(profileId));
+
+        res.status(200).json({
+            success: true,
+            message: "Data foto profil telah diambil",
+            data: profileImage
+        })
+    }catch (error) {
+        res.status(500).json({message: "Error fetching profile image", error});
+    }
+}
+
 export const postProfile = async (req: Request, res: Response) => {
     try {
         const {name, birth, gender} = req.body;
@@ -96,7 +115,6 @@ export const putProfile = async (req: Request, res: Response) => {
     try {
         const {id} = req.params;
         const {name, birth, gender} = req.body;
-        console.log(id, name, birth, gender)
 
         const updatedProfile = await updateProfile(
             Number(id), name, new Date(birth), gender
@@ -115,7 +133,17 @@ export const putProfile = async (req: Request, res: Response) => {
 export const eraseProfile = async (req: Request, res: Response) => {
     const {id} = req.params;
     try {
+        const profileImages = await prisma.profileImage.findMany({
+            where: { profileId: Number(id) },
+            select: { image: true }
+        });
+
         await deleteProfile(Number(id));
+
+        for (const img of profileImages) {
+            const absolutePath = path.join(process.cwd(), img.image);
+            fs.unlink(absolutePath, () => {});
+        }
         res.json({
             success: true,
             message: `Profil dengan id: ${id} telah berhasil dihapus`,

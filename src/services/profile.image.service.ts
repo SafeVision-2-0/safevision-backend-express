@@ -22,3 +22,8 @@ export const deleteProfileImage = async (id: number) => {
     });
 }
 
+export const readProfileImagesByProfileId = async (profileId: number) => {
+    return prisma.profileImage.findMany({
+        where: {profileId}
+    });
+}
