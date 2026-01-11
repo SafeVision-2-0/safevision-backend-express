@@ -71,7 +71,6 @@ export const postProfileImage = async (
     res: Response
 ) => {
     const {profileId} = req.body
-    console.log(`profile id: ${profileId}`);
 
     if (!req.file) {
         return res.status(400).json({message: "File harus berupa gambar"});
@@ -84,7 +83,6 @@ export const postProfileImage = async (
     try {
         if (profileId) {
             const profile = await readProfileById(Number(profileId));
-            console.log("profile", profile);
             if (!profile) {
                 fs.unlink(absolutePath, () => {
                 });

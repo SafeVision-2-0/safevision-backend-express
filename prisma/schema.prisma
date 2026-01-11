@@ -57,7 +57,7 @@ model History {
 }
 
 model TeamOnProfiles {
-  profile   Profile @relation(fields: [profileId], references: [id])
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId Int     @map("profile_id")
   team      Team    @relation(fields: [teamId], references: [id])
   teamId    Int     @map("team_id")
@@ -77,7 +77,7 @@ model Team {
 }
 
 model PositionOnProfiles {
-  profile    Profile  @relation(fields: [profileId], references: [id])
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId  Int      @map("profile_id")
   position   Position @relation(fields: [positionId], references: [id])
   positionId Int      @map("position_id")
