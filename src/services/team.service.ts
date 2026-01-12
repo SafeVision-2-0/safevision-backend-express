@@ -4,6 +4,20 @@ export const getAllTeams = async () => {
     return prisma.team.findMany();
 }
 
+export const readTeamsWithPagination = async (skip:number, limit:number) => {
+    return prisma.team.findMany({
+        skip,
+        take: limit,
+        orderBy: {
+            id: "asc"
+        }
+    });
+}
+
+export const totalTeam = async () => {
+    return prisma.team.count()
+}
+
 export const createTeam = async (name: string) => {
     return prisma.team.create({
         data: {name},
