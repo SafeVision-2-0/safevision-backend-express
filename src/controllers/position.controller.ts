@@ -1,11 +1,47 @@
 import type {Request, Response} from "express";
-import {getAllPositions,createPosition, deletePosition, updatePosition} from "../services/position.service";
+import {
+    readAllPositions,
+    createPosition,
+    deletePosition,
+    updatePosition,
+    readPositionsWithPagination, totalPosition
+} from "../services/position.service";
 import {readAllProfileByPositionId} from "../services/profile.position.service";
 
 
+export const getPositionsWithPagination = async (req: Request, res: Response) => {
+    try{
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+
+        if (page < 1 || limit < 1 || limit > 100) {
+            return res.status(400).json({message: "Invalid pagination params"});
+        }
+
+        const skip = (page - 1) * limit;
+
+        const positions = await readPositionsWithPagination(skip,limit);
+        const total = await totalPosition()
+
+        res.status(200).json({
+            success: true,
+            message: "Data posisi telah diambil",
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            },
+            data: positions
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching positions", error });
+    }
+}
+
 export const getPositions = async (req: Request, res: Response) => {
     try{
-        const positions = await getAllPositions();
+        const positions = await readAllPositions();
 
         res.status(200).json({
             success: true,

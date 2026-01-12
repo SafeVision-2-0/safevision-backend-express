@@ -1,7 +1,21 @@
 import {prisma} from "./prisma";
 
-export const getAllPositions = async () => {
+export const readAllPositions = async () => {
     return prisma.position.findMany();
+}
+
+export const readPositionsWithPagination = async (skip:number, limit:number) => {
+    return prisma.position.findMany({
+        skip,
+        take: limit,
+        orderBy: {
+            id: "asc"
+        }
+    });
+}
+
+export const totalPosition = async () => {
+    return prisma.position.count()
 }
 
 export const createPosition = async (name: string) => {
