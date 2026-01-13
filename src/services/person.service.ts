@@ -50,16 +50,22 @@ export const readPersonsWithPagination = async (
             ],
         },
         include: {
+            profileImage: {
+                take: 1,
+                orderBy: {
+                    created_at: "asc", // atau desc kalau mau yang terbaru
+                },
+                select: {
+                    image: true,
+                },
+            },
             positions: {
                 include: { position: true },
             },
             teams: {
                 include: { team: true },
             },
-        },
-        orderBy: {
-            id: "asc",
-        },
+        }
     });
 };
 

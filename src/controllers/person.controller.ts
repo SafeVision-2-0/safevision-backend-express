@@ -51,6 +51,7 @@ export const getPersonsWithPagination = async (req: Request, res: Response) => {
             name: person.name,
             gender: person.gender,
             birth: person.birth,
+            profileImage: person.profileImage[0]?.image ?? null,
             position: person.positions.map(p => p.position),
             team: person.teams.map(t => t.team)
         }));
