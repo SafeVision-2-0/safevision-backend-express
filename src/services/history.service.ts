@@ -56,6 +56,51 @@ export const readHistoriesWithPagination = async ({skip, take, status, profileId
     });
 };
 
+export const countTodayHistoriesPerProfile = async (date: string) => {
+    const start = new Date(`${date}T00:00:00.000Z`);
+    const end = new Date(`${date}T23:59:59.999Z`);
+
+    return prisma.history.groupBy({
+        by: ["profileId"],
+        where: {
+            profileId: { not: null },
+            created_at: {
+                gte: start,
+                lte: end,
+            },
+        },
+        _count: {
+            id: true,
+        },
+        orderBy: {
+            _count: {
+                id: "desc",
+            },
+        },
+    });
+};
+
+export const getTodayHistoryStats = async (date: string) => {
+    const grouped = await countTodayHistoriesPerProfile(date);
+
+    const profileIds = grouped.map(g => g.profileId!) ;
+
+    const profiles = await prisma.profile.findMany({
+        where: { id: { in: profileIds } },
+        select: { id: true, name: true },
+    });
+
+    const profileMap = new Map(
+        profiles.map(p => [p.id, p.name])
+    );
+
+    return grouped.map(g => ({
+        profileId: g.profileId,
+        profileName: profileMap.get(g.profileId!) ?? "Unknown",
+        count: g._count.id,
+    }));
+};
+
 export const countHistories = async ({status, profileId, date,}: Omit<HistoryQuery, "skip" | "take">) => {
     const where: any = {};
 
