@@ -59,7 +59,7 @@ model History {
 model TeamOnProfiles {
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId Int     @map("profile_id")
-  team      Team    @relation(fields: [teamId], references: [id])
+  team      Team    @relation(fields: [teamId], references: [id],onDelete: Cascade)
   teamId    Int     @map("team_id")
 
   @@id([profileId, teamId])
@@ -79,7 +79,7 @@ model Team {
 model PositionOnProfiles {
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId  Int      @map("profile_id")
-  position   Position @relation(fields: [positionId], references: [id])
+  position   Position @relation(fields: [positionId], references: [id],onDelete: Cascade)
   positionId Int      @map("position_id")
 
   @@id([profileId, positionId])
@@ -112,8 +112,10 @@ model ProfileImage {
 }
 
 model FaceEmbedding {
-  id     Int  @id @default(autoincrement())
-  vector Json
+  id Int @id @default(autoincrement())
+
+  vectorCasia Json @map("vector_casia")
+  vectorVgg   Json @map("vector_vgg")
 
   profileImageId Int          @map("profile_image_id")
   profileImage   ProfileImage @relation(fields: [profileImageId], references: [id], onDelete: Cascade)
