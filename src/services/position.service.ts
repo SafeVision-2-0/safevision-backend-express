@@ -14,6 +14,49 @@ export const readPositionsWithPagination = async (skip:number, limit:number) => 
     });
 }
 
+export const readPositionsWithMembersPreview = async (
+    skip: number,
+    limit: number
+) => {
+    return prisma.position.findMany({
+        skip: skip,
+        take: limit,
+        orderBy: {
+            id: "asc",
+        },
+        include: {
+            // jumlah anggota
+            _count: {
+                select: {
+                    profiles: true,
+                },
+            },
+
+            // ambil relasi profile (max 5)
+            profiles: {
+                take: 5,
+                include: {
+                    profile: {
+                        select: {
+                            id: true,
+                            name: true,
+                            profileImage: {
+                                take: 1,
+                                orderBy: {
+                                    created_at: "asc", // atau desc
+                                },
+                                select: {
+                                    image: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+};
+
 export const totalPosition = async () => {
     return prisma.position.count()
 }

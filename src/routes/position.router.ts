@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
     erasePosition,
-    getPositions, getPositionsWithPagination,
+    getPositions, getPositionsWithMembersPreview, getPositionsWithPagination,
     getProfilesByPositionId,
     postPosition,
     putPosition
@@ -10,7 +10,8 @@ import {
 const router: Router = Router();
 
 //router.get("/", getPositions);
-router.get("/",getPositionsWithPagination)
+//router.get("/",getPositionsWithPagination)
+router.get("/",getPositionsWithMembersPreview)
 router.get("/:positionId/profile", getProfilesByPositionId);
 router.post("/", postPosition);
 router.put("/:id", putPosition);
