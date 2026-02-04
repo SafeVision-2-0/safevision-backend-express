@@ -1,9 +1,14 @@
 import type {Request, Response} from "express";
-import {createUser, readUserByEmail} from "../services/user.service";
+import {createUser, readUserByEmail, readUserById} from "../services/user.service";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {readProfileById} from "../services/profile.service";
 
+interface AuthenticatedRequest extends Request {
+    user?: {
+        userId: number; // Structure depends on your JWT payload
+    };
+}
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -68,3 +73,22 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
+export const getMe = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+
+        if (!userId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const user = await readUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
