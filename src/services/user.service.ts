@@ -21,3 +21,16 @@ export const updateUser = async (id: number, username: string) => {
         data: {username: username},
     })
 }
+
+export const readUserById = async (id: number) => {
+    return prisma.user.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            email: true,
+            username: true,
+            profile: true,
+            created_at: true
+        },
+    });
+};
