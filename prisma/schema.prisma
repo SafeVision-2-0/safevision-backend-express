@@ -10,16 +10,17 @@ generator client {
 
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
 }
-
 
 model User {
   id       Int    @id @default(autoincrement())
   email    String @unique @db.VarChar(50)
-  password String @db.VarChar(50)
+  password String
   username String
 
-  profile Profile?
+  profileId Int?     @unique @map("profile_id")
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -31,11 +32,10 @@ model Profile {
   birth  DateTime
   gender String   @db.Char(1)
 
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User?
 
-  history      History?
-  profileImage ProfileImage?
+  histories    History[]
+  profileImage ProfileImage[]
 
   teams     TeamOnProfiles[]
   positions PositionOnProfiles[]
@@ -45,26 +45,24 @@ model Profile {
 }
 
 model History {
-  id             Int     @id @default(autoincrement())
-  image_captured String
-  isUnknown      Boolean
-  gender         String  @db.Char(1)
+  id            Int     @id @default(autoincrement())
+  imageCaptured String  @map("image_captured")
+  isUnknown     Boolean @map("is_unknown")
 
-  profileId Int     @unique
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId Int?     @map("profile_id")
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
 model TeamOnProfiles {
-  profile   Profile @relation(fields: [profileId], references: [id])
-  profileId Int
-  team      Team    @relation(fields: [teamId], references: [id])
-  teamId    Int
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId Int     @map("profile_id")
+  team      Team    @relation(fields: [teamId], references: [id],onDelete: Cascade)
+  teamId    Int     @map("team_id")
 
   @@id([profileId, teamId])
-  
   @@map("team_on_profiles")
 }
 
@@ -79,13 +77,12 @@ model Team {
 }
 
 model PositionOnProfiles {
-  profile    Profile  @relation(fields: [profileId], references: [id])
-  profileId  Int
-  position   Position @relation(fields: [positionId], references: [id])
-  positionId Int
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId  Int      @map("profile_id")
+  position   Position @relation(fields: [positionId], references: [id],onDelete: Cascade)
+  positionId Int      @map("position_id")
 
   @@id([profileId, positionId])
-  
   @@map("position_on_profiles")
 }
 
@@ -103,9 +100,9 @@ model ProfileImage {
   id    Int    @id @default(autoincrement())
   image String
 
-  faceEmbedding FaceEmbedding?
+  faceEmbedding FaceEmbedding[]
 
-  profileId Int     @unique
+  profileId Int     @map("profile_id")
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
@@ -115,10 +112,12 @@ model ProfileImage {
 }
 
 model FaceEmbedding {
-  id     Int  @id @default(autoincrement())
-  vector Json
+  id Int @id @default(autoincrement())
 
-  profileImageId Int          @unique
+  vectorCasia Json @map("vector_casia")
+  vectorVgg   Json @map("vector_vgg")
+
+  profileImageId Int          @map("profile_image_id")
   profileImage   ProfileImage @relation(fields: [profileImageId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())

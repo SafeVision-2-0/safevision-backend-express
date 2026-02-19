@@ -1,14 +1,24 @@
 import {prisma} from "./prisma";
 
-export const getAllTeams = async () => {
-    return prisma.team.findMany();
+export const readAllPositions = async () => {
+    return prisma.position.findMany();
 }
 
-export const readTeamsWithMembersPreview = async (
+export const readPositionsWithPagination = async (skip:number, limit:number) => {
+    return prisma.position.findMany({
+        skip,
+        take: limit,
+        orderBy: {
+            id: "asc"
+        }
+    });
+}
+
+export const readPositionsWithMembersPreview = async (
     skip: number,
     limit: number
 ) => {
-    return prisma.team.findMany({
+    return prisma.position.findMany({
         skip: skip,
         take: limit,
         orderBy: {
@@ -47,35 +57,25 @@ export const readTeamsWithMembersPreview = async (
     });
 };
 
-export const readTeamsWithPagination = async (skip:number, limit:number) => {
-    return prisma.team.findMany({
-        skip,
-        take: limit,
-        orderBy: {
-            id: "asc"
-        }
-    });
+export const totalPosition = async () => {
+    return prisma.position.count()
 }
 
-export const totalTeam = async () => {
-    return prisma.team.count()
-}
-
-export const createTeam = async (name: string) => {
-    return prisma.team.create({
+export const createPosition = async (name: string) => {
+    return prisma.position.create({
         data: {name},
     });
 };
 
-export const updateTeam = async (id: number, name: string) => {
-    return prisma.team.update({
+export const updatePosition = async (id: number, name: string) => {
+    return prisma.position.update({
         where: {id},
         data: {name},
     });
 };
 
-export const deleteTeam = async (id: number) => {
-    return prisma.team.delete({
+export const deletePosition = async (id: number) => {
+    return prisma.position.delete({
         where: {id}
     });
 }
