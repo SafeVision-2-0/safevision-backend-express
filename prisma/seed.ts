@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 async function main() {
 
-    const email = "admin@example.com"
+    const email = "admin1@example.com"
 
     const existing = await prisma.user.findUnique({
         where: { email }
@@ -20,7 +20,7 @@ async function main() {
 
     const profile = await prisma.profile.create({
         data: {
-            name: "admin",
+            name: "admin1",
             birth: new Date("2000-01-01"),
             gender: "M"
         }
@@ -30,7 +30,7 @@ async function main() {
         data: {
             email: email,
             password: hashedPassword,
-            username: "admin",
+            username: "admin1",
             profileId: profile.id
         }
     })
