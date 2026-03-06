@@ -1,51 +1,48 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client"
+import bcrypt from "bcryptjs"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function main() {
-    console.log("🌱 Seeding admin user...");
 
-    /* =======================
-       ADMIN PROFILE
-    ======================= */
-    const adminProfile =
-        (await prisma.profile.findFirst({
-            where: { name: "Administrator" },
-        })) ??
-        (await prisma.profile.create({
-            data: {
-                name: "Administrator",
-                birth: new Date("1990-01-01"),
-                gender: "M",
-            },
-        }));
+    const email = "admin@example.com"
 
-    /* =======================
-       ADMIN USER
-    ======================= */
-    await prisma.user.upsert({
-        where: {
-            email: "admin@safevision.local",
-        },
-        update: {
-            profileId: adminProfile.id,
-        },
-        create: {
-            email: "admin@safevision.local",
+    const existing = await prisma.user.findUnique({
+        where: { email }
+    })
+
+    if (existing) {
+        console.log("Admin already exists")
+        return
+    }
+
+    const hashedPassword = await bcrypt.hash("admin", 10)
+
+    const profile = await prisma.profile.create({
+        data: {
+            name: "admin",
+            birth: new Date("2000-01-01"),
+            gender: "M"
+        }
+    })
+
+    const user = await prisma.user.create({
+        data: {
+            email: email,
+            password: hashedPassword,
             username: "admin",
-            password: "admin123", // ⚠️ DEV ONLY (hash nanti)
-            profileId: adminProfile.id,
-        },
-    });
+            profileId: profile.id
+        }
+    })
 
-    console.log("✅ Admin user seeded successfully");
+    console.log("Admin user created:", user.email)
 }
 
 main()
     .catch((e) => {
-        console.error("❌ Seed error:", e);
-        process.exit(1);
+        console.error(e)
+        process.exit(1)
     })
     .finally(async () => {
-        await prisma.$disconnect();
-    });
+        await prisma.$disconnect()
+    })
